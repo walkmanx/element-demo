@@ -1,6 +1,4 @@
-/**
-* 创建高德地图Demo
-*/
+<！-- 创建高德地图Demo -- >
 <template>
 	<div>
 		<div>
@@ -165,6 +163,7 @@
 					//执行实时天气信息查询
 					weather.getLive('西安市', function(err, data) {
 						self.$message(JSON.stringify(data));
+						console.log(JSON.stringify(data));
 					});
 				});
 			},
