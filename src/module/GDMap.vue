@@ -219,6 +219,35 @@
 				console.log('浏览器平台类型' + plat);
 				console.log('浏览器是否支持 Canvas' + canvas);
 				console.log('浏览器是否支持 WebGL' + isWebGL);
+			},
+			// 距离、长度、面积计算 AMap.GeometryUtil
+			computerFunc(){
+				// 计算两点间的实际距离 AMap.GeometryUtil.distance
+				var p1 = [116.434027, 39.941037];
+				var p2 = [116.461665, 39.941564];
+				// 返回 p1 到 p2 间的地面距离，单位：米
+				var dis = AMap.GeometryUtil.distance(p1, p2);
+				// 计算点到线段的最短距离 AMap.GeometryUtil.distanceToSegment
+				var p0 = [116.450378, 39.947585];
+				var p1 = [116.434027, 39.941037];
+				var p2 = [116.461665, 39.941564];
+				// 返回 p0 到线段 p1-p2 的最短地面距离，单位：米
+				var dis = AMap.GeometryUtil.distanceToSegment(p0, p1, p2);
+				// 计算点到路径的最短距离 AMap.GeometryUtil.distanceToLine
+		
+				// 计算路径的实际长度 AMap.GeometryUtil.distanceOfLine
+				var p0 = [116.450378, 39.947585];
+				var p1 = [116.434027, 39.941037];
+				var p2 = [116.461665, 39.941564];
+				// 返回线段 p0-p1-p2 的实际长度，单位：米
+				var dis = AMap.GeometryUtil.distanceOfLine([p0, p1, p2]);
+				// 计算封闭区域的面积 AMap.GeometryUtil.ringArea
+				var p0 = [116.450378, 39.947585];
+				var p1 = [116.434027, 39.941037];
+				var p2 = [116.461665, 39.941564];
+				// 返回点 p0-p1-p2 围成的闭合区域面积，单位：平方米
+				var area = AMap.GeometryUtil.ringArea([p0, p1, p2]);
+				
 			}
 		}
 	}
