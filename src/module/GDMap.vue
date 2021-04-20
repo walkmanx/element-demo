@@ -30,6 +30,11 @@
 			// 初始化map
 			initMap() {
 				const self = this;
+				
+				if(this.map){
+					this.destroyMap();
+				}
+				
 				this.map = new AMap.Map('container', {
 					//center: [108.91083, 34.23936], // 设置地图中心点坐标，如果不设置的话则默认显示当前城市
 					zoom: 11, //设置地图显示的缩放级别
