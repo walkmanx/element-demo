@@ -1,6 +1,5 @@
-<！-- 创建高德地图Demo -- >
 <template>
-	<div>
+	<div id="GDMap">
 		<div>
 			<el-button type="primary" @click="initMap">加载地图</el-button>
 			<el-button type="primary" @click="addPlugin">引入工具条插件</el-button>
@@ -10,6 +9,7 @@
 			<el-button type="primary" @click="removeMarker">移除点标记</el-button>
 			<el-button type="primary" @click="loadWeather">加载天气查询插件</el-button>
 			<el-button type="primary" @click="getBrowserInfo">获取浏览器信息</el-button>
+			<el-button type="primary" @click="pointArea">点是否在区域内</el-button>
 		</div>
 		<div id="container"></div>
 	</div>
@@ -20,7 +20,33 @@
 		data() {
 			return {
 				map: null,
-				markerList: []
+				markerList: [],
+				// 创建多边形
+				path : [
+					[116.169465,39.932670],
+					[116.160260,39.924492], 
+					[116.186138,39.879817], 
+					[116.150625,39.710019],
+					[116.183198,39.709920], 
+					[116.226950,39.777616], 
+					[116.421078,39.810771],
+					[116.442621,39.799892],
+					[116.463478,39.790066], 
+					[116.588276,39.809551],
+					[116.536091,39.808859],
+					[116.573856,39.839643], 
+					[116.706380,39.916740],
+					[116.657285,39.934545],
+					[116.600293,39.937770],
+					[116.540039,39.937968],
+					[116.514805,39.982375],
+					[116.499935,40.013710],
+					[116.546520,40.030443], 
+					[116.687668,40.129961], 
+					[116.539697,40.080659],
+					[116.503390,40.058474],
+					[116.468800,40.052578]
+				]
 			}
 		},
 		mounted() {
@@ -66,7 +92,7 @@
 					// 触发事件类型
 					var type = ev.type;
 
-
+					console.log(JSON.stringify(ev.lnglat))
 					self.$message('您在 [ ' + ev.lnglat.getLng() + ',' + ev.lnglat.getLat() + ' ] 的位置单击了地图！');
 
 				});
@@ -126,7 +152,7 @@
 					return;
 				}
 				// 创建点标记
-				this.marker = this.createMarker(108.91083, 34.23936, '我的位置');
+				this.marker = this.createMarker(108.910648, 34.243954, '我的位置');
 				// 将创建的点标记添加到已有的地图实例：
 				this.map.add(this.marker);
 
@@ -141,7 +167,6 @@
 				this.marker = this.createMarker(x, y, title);
 				// 将创建的点标记添加到已有的地图实例：
 				this.map.add(this.marker);
-
 			},
 			// 移除点标记
 			removeMarker() {
@@ -252,6 +277,53 @@
 				// 返回点 p0-p1-p2 围成的闭合区域面积，单位：平方米
 				var area = AMap.GeometryUtil.ringArea([p0, p1, p2]);
 				
+			},
+			pointArea(){
+				if(!this.map){
+					this.$message.warning('请先创建地图');
+					return;
+				}
+				var polygon = new AMap.Polygon({
+					map: this.map,
+					fillOpacity:0.4,
+					path: this.path
+				});
+				if(this.marker){
+					this.map.remove(this.marker);
+					this.marker = null;
+				}
+					
+				// 创建点
+				this.marker = new AMap.Marker({
+					map: this.map,
+					draggable:true,
+					position: [116.566298, 40.014179]
+				});
+				
+				this.computer();
+				
+				// 为marker绑定拖拽事件
+				const self = this;
+				this.marker.on('dragging',function(){
+					var point = self.marker.getPosition();
+					var isPointInRing = AMap.GeometryUtil.isPointInRing(point,self.path);
+					console.log(isPointInRing)
+					self.marker.setLabel({
+						content:isPointInRing?'内部':'外部',
+						offset:new AMap.Pixel(20,0)
+					});
+				})
+				this.map.setFitView();
+				
+			},
+			computer(){
+				var point = this.marker.getPosition();
+				var isPointInRing = AMap.GeometryUtil.isPointInRing(point,this.path);
+				console.log(isPointInRing)
+				this.marker.setLabel({
+					content:isPointInRing?'内部':'外部',
+					offset:new AMap.Pixel(20,0)
+				});
 			}
 		}
 	}
